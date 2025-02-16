@@ -1,0 +1,2204 @@
+
+
+
+
+VAR player_luck = 0
+VAR unlock_all = 0
+VAR reveal_endings = 0
+VAR jenna_difficulty = 3
+VAR hayley_difficulty = 5
+VAR game_verbosity = 0
+
+VAR random_seed = 0
+~ random_seed = RANDOM(1,1000)
+~ SEED_RANDOM(random_seed)
+
+
+// I have no idea why my functions won't work without parameters
+VAR dummy_pass = 0
+
+VAR turn_counter = 0
+
+// The player's hand
+VAR player_card_1 = 0
+VAR player_card_2 = 0
+VAR player_card_3 = 0
+VAR player_card_4 = 0
+VAR player_card_5 = 0
+VAR player_card_1e = 0
+VAR player_card_2e = 0
+VAR player_card_3e = 0
+VAR player_card_4e = 0
+VAR player_card_5e = 0
+
+// Hayley's hand
+VAR hayley_card_1 = 0
+VAR hayley_card_2 = 0
+VAR hayley_card_3 = 0
+VAR hayley_card_4 = 0
+VAR hayley_card_5 = 0
+VAR hayley_card_1e = 0
+VAR hayley_card_2e = 0
+VAR hayley_card_3e = 0
+VAR hayley_card_4e = 0
+VAR hayley_card_5e = 0
+
+// Jenna's hand
+VAR jenna_card_1 = 0
+VAR jenna_card_2 = 0
+VAR jenna_card_3 = 0
+VAR jenna_card_4 = 0
+VAR jenna_card_5 = 0
+VAR jenna_card_1e = 0
+VAR jenna_card_2e = 0
+VAR jenna_card_3e = 0
+VAR jenna_card_4e = 0
+VAR jenna_card_5e = 0
+
+// LIST for player clothes
+LIST player_clothes = (player_underwear), (player_shirt), (player_pants), (player_socks), (player_shoes), (player_hoodie)
+LIST jenna_clothes = (jenna_panties), (jenna_sports_bra), (jenna_sweater), (jenna_sweatpants), (jenna_sandals)
+LIST hayley_clothes = (hayley_thong), (hayley_bra), (hayley_crop_top), (hayley_leggings), (hayley_boots), (hayley_jacket), (hayley_ear_rings)
+
+
+
+// trigger tags and bars
+VAR num_player_clothes = 6
+VAR num_jenna_clothes = 5
+VAR num_hayley_clothes = 7
+
+VAR player_masturbate = 0
+VAR jenna_masturbate = 0
+VAR hayley_masturbate = 0
+
+VAR jenna_arousal = 30
+VAR hayley_arousal = 0
+
+VAR winning_player = 0
+
+
+// LIST for the cards in the deck
+LIST deck = (ace_of_spades), (two_of_spades), (three_of_spades), (four_of_spades), (five_of_spades), (six_of_spades), (seven_of_spades), (eight_of_spades), (nine_of_spades), (ten_of_spades), (jack_of_spades), (queen_of_spades), (king_of_spades), (ace_of_hearts), (two_of_hearts), (three_of_hearts), (four_of_hearts), (five_of_hearts), (six_of_hearts), (seven_of_hearts), (eight_of_hearts), (nine_of_hearts), (ten_of_hearts), (jack_of_hearts), (queen_of_hearts), (king_of_hearts), (ace_of_clubs), (two_of_clubs), (three_of_clubs), (four_of_clubs), (five_of_clubs), (six_of_clubs), (seven_of_clubs), (eight_of_clubs), (nine_of_clubs), (ten_of_clubs), (jack_of_clubs), (queen_of_clubs), (king_of_clubs), (ace_of_diamonds), (two_of_diamonds), (three_of_diamonds), (four_of_diamonds), (five_of_diamonds), (six_of_diamonds), (seven_of_diamonds), (eight_of_diamonds), (nine_of_diamonds), (ten_of_diamonds), (jack_of_diamonds), (queen_of_diamonds), (king_of_diamonds)
+
+
+// I probably just don't know inky enough, but I am just using these lists in the print functions for printing in english, what the hand was. 
+LIST hand_tiers = (a_high_card), (one_pair), (two_pairs), (three_of_a_kind), (a_straight), (a_flush), (a_full_house), (four_of_a_kind), (a_straight_flush), (a_royal_flush)
+LIST hand_descriptors = (two), (three), (four), (five), (six), (seven), (eight), (nine), (ten), (jack), (queen), (king), (ace), (twos), (threes), (fours), (fives), (sixes), (sevens), (eights), (nines), (tens), (jacks), (queens), (kings), (aces), (clubs), (diamonds), (hearts), (spades)
+    
+
++ [Lets go!]
+-> intro_menu
+
+
+
+// utility functions ===============================================================
+
+// This is not the most concise format to list a bunch of conditionals
+=== function name_to_num(name1) ===
+~ temp num1 = 1
+{ name1 == ace_of_clubs:
+    ~ num1 = 1
+}
+{ name1 == two_of_clubs:
+    ~ num1 = 2
+}
+{ name1 == three_of_clubs:
+    ~ num1 = 3
+}
+{ name1 == four_of_clubs:
+    ~ num1 = 4
+}
+{ name1 == five_of_clubs:
+    ~ num1 = 5
+}
+{ name1 == six_of_clubs:
+    ~ num1 = 6
+}
+{ name1 == seven_of_clubs:
+    ~ num1 = 7
+}
+{ name1 == eight_of_clubs:
+    ~ num1 = 8
+}
+{ name1 == nine_of_clubs:
+    ~ num1 = 9
+}
+{ name1 == ten_of_clubs:
+    ~ num1 = 10
+}
+{ name1 == jack_of_clubs:
+    ~ num1 = 11
+}
+{ name1 == queen_of_clubs:
+    ~ num1 = 12
+}
+{ name1 == king_of_clubs:
+    ~ num1 = 13
+}
+{ name1 == ace_of_diamonds:
+    ~ num1 = 14
+}
+{ name1 == two_of_diamonds:
+    ~ num1 = 15
+}
+{ name1 == three_of_diamonds:
+    ~ num1 = 16
+}
+{ name1 == four_of_diamonds:
+    ~ num1 = 17
+}
+{ name1 == five_of_diamonds:
+    ~ num1 = 18
+}
+{ name1 == six_of_diamonds:
+    ~ num1 = 19
+}
+{ name1 == seven_of_diamonds:
+    ~ num1 = 20
+}
+{ name1 == eight_of_diamonds:
+    ~ num1 = 21
+}
+{ name1 == nine_of_diamonds:
+    ~ num1 = 22
+}
+{ name1 == ten_of_diamonds:
+    ~ num1 = 23
+}
+{ name1 == jack_of_diamonds:
+    ~ num1 = 24
+}
+{ name1 == queen_of_diamonds:
+    ~ num1 = 25
+}
+{ name1 == king_of_diamonds:
+    ~ num1 = 26
+}
+{ name1 == ace_of_hearts:
+    ~ num1 = 27
+}
+{ name1 == two_of_hearts:
+    ~ num1 = 28
+}
+{ name1 == three_of_hearts:
+    ~ num1 = 29
+}
+{ name1 == four_of_hearts:
+    ~ num1 = 30
+}
+{ name1 == five_of_hearts:
+    ~ num1 = 31
+}
+{ name1 == six_of_hearts:
+    ~ num1 = 32
+}
+{ name1 == seven_of_hearts:
+    ~ num1 = 33
+}
+{ name1 == eight_of_hearts:
+    ~ num1 = 34
+}
+{ name1 == nine_of_hearts:
+    ~ num1 = 35
+}
+{ name1 == ten_of_hearts:
+    ~ num1 = 36
+}
+{ name1 == jack_of_hearts:
+    ~ num1 = 37
+}
+{ name1 == queen_of_hearts:
+    ~ num1 = 38
+}
+{ name1 == king_of_hearts:
+    ~ num1 = 39
+}
+{ name1 == ace_of_spades:
+    ~ num1 = 40
+}
+{ name1 == two_of_spades:
+    ~ num1 = 41
+}
+{ name1 == three_of_spades:
+    ~ num1 = 42
+}
+{ name1 == four_of_spades:
+    ~ num1 = 43
+}
+{ name1 == five_of_spades:
+    ~ num1 = 44
+}
+{ name1 == six_of_spades:
+    ~ num1 = 45
+}
+{ name1 == seven_of_spades:
+    ~ num1 = 46
+}
+{ name1 == eight_of_spades:
+    ~ num1 = 47
+}
+{ name1 == nine_of_spades:
+    ~ num1 = 48
+}
+{ name1 == ten_of_spades:
+    ~ num1 = 49
+}
+{ name1 == jack_of_spades:
+    ~ num1 = 50
+}
+{ name1 == queen_of_spades:
+    ~ num1 = 51
+}
+{ name1 == king_of_spades:
+    ~ num1 = 52
+}
+~ return num1
+
+=== function num_to_name(num2) ===
+~ temp name2 = ace_of_clubs
+{ num2 == 1:
+    ~ name2 = ace_of_clubs
+}
+{ num2 == 2:
+    ~ name2 = two_of_clubs
+}
+{ num2 == 3:
+    ~ name2 = three_of_clubs
+}
+{ num2 == 4:
+    ~ name2 = four_of_clubs
+}
+{ num2 == 5:
+    ~ name2 = five_of_clubs
+}
+{ num2 == 6:
+    ~ name2 = six_of_clubs
+}
+{ num2 == 7:
+    ~ name2 = seven_of_clubs
+}
+{ num2 == 8:
+    ~ name2 = eight_of_clubs
+}
+{ num2 == 9:
+    ~ name2 = nine_of_clubs
+}
+{ num2 == 10:
+    ~ name2 = ten_of_clubs
+}
+{ num2 == 11:
+    ~ name2 = jack_of_clubs
+}
+{ num2 == 12:
+    ~ name2 = queen_of_clubs
+}
+{ num2 == 13:
+    ~ name2 = king_of_clubs
+}
+{ num2 == 14:
+    ~ name2 = ace_of_diamonds
+}
+{ num2 == 15:
+    ~ name2 = two_of_diamonds
+}
+{ num2 == 16:
+    ~ name2 = three_of_diamonds
+}
+{ num2 == 17:
+    ~ name2 = four_of_diamonds
+}
+{ num2 == 18:
+    ~ name2 = five_of_diamonds
+}
+{ num2 == 19:
+    ~ name2 = six_of_diamonds
+}
+{ num2 == 20:
+    ~ name2 = seven_of_diamonds
+}
+{ num2 == 21:
+    ~ name2 = eight_of_diamonds
+}
+{ num2 == 22:
+    ~ name2 = nine_of_diamonds
+}
+{ num2 == 23:
+    ~ name2 = ten_of_diamonds
+}
+{ num2 == 24:
+    ~ name2 = jack_of_diamonds
+}
+{ num2 == 25:
+    ~ name2 = queen_of_diamonds
+}
+{ num2 == 26:
+    ~ name2 = king_of_diamonds
+}
+{ num2 == 27:
+    ~ name2 = ace_of_hearts
+}
+{ num2 == 28:
+    ~ name2 = two_of_hearts
+}
+{ num2 == 29:
+    ~ name2 = three_of_hearts
+}
+{ num2 == 30:
+    ~ name2 = four_of_hearts
+}
+{ num2 == 31:
+    ~ name2 = five_of_hearts
+}
+{ num2 == 32:
+    ~ name2 = six_of_hearts
+}
+{ num2 == 33:
+    ~ name2 = seven_of_hearts
+}
+{ num2 == 34:
+    ~ name2 = eight_of_hearts
+}
+{ num2 == 35:
+    ~ name2 = nine_of_hearts
+}
+{ num2 == 36:
+    ~ name2 = ten_of_hearts
+}
+{ num2 == 37:
+    ~ name2 = jack_of_hearts
+}
+{ num2 == 38:
+    ~ name2 = queen_of_hearts
+}
+{ num2 == 39:
+    ~ name2 = king_of_hearts
+}
+{ num2 == 40:
+    ~ name2 = ace_of_spades
+}
+{ num2 == 41:
+    ~ name2 = two_of_spades
+}
+{ num2 == 42:
+    ~ name2 = three_of_spades
+}
+{ num2 == 43:
+    ~ name2 = four_of_spades
+}
+{ num2 == 44:
+    ~ name2 = five_of_spades
+}
+{ num2 == 45:
+    ~ name2 = six_of_spades
+}
+{ num2 == 46:
+    ~ name2 = seven_of_spades
+}
+{ num2 == 47:
+    ~ name2 = eight_of_spades
+}
+{ num2 == 48:
+    ~ name2 = nine_of_spades
+}
+{ num2 == 49:
+    ~ name2 = ten_of_spades
+}
+{ num2 == 50:
+    ~ name2 = jack_of_spades
+}
+{ num2 == 51:
+    ~ name2 = queen_of_spades
+}
+{ num2 == 52:
+    ~ name2 = king_of_spades
+}
+~ return name2
+
+=== function draw_card(dummy_accept) ===
+
+VAR random_num1 = 0
+~ random_num1 = RANDOM(1,52)
+
+VAR random_name1 = ace_of_clubs
+~ random_name1 = num_to_name(random_num1)
+
+// check if the card drawn is in the deck, if not, resample, if so, remove it from the deck and return it
+{ deck !? random_name1:
+    ~ random_num1 = draw_card(dummy_pass)
+}
+{ deck ? random_name1:
+    ~ deck -= random_name1
+}
+
+~ return random_num1
+
+
+// Evaluate the score of a hand
+=== function evaluate_hand( card_1, card_2, card_3, card_4, card_5) ===
+
+~ temp hand_value = 0
+
+/*
+XYYZZ
+
+X = hand tier (0 = high card, 1 = pairs, etc)
+YY = first tiebreaker
+ZZ = second tiebreaker
+
+high card
+0:  numerical value of highest card 2-14 (times 100)
+    numerical value of second highest card 2-14
+pair
+1:  numerical value of the pair
+    numerical value of the next highest card
+two pair
+2:  numerical value of the highest pair
+    numerical value of the second pair
+three of a kind
+3:  numerical value of the trio
+    numerical value of the next highest card
+straight
+4:  highest card in the straight
+    suit of highest (clubs = 1, diamonds = 2, hearts = 3, spades = 4)
+Flush
+5:  highest card in the flush
+    suit
+Full house
+6:  value of the triple
+    value of the pair
+Four
+7:  value of the quartet
+    value of the other card
+Straight flush
+8:  value of the highest card
+    suit of highest (clubs = 1, diamonds = 2, hearts = 3, spades = 4)
+royal flush
+8: (just use the straight flush for this)
+
+*/
+
+// populate suit and number values
+~ temp card_1_suit = 0
+~ temp card_2_suit = 0
+~ temp card_3_suit = 0
+~ temp card_4_suit = 0
+~ temp card_5_suit = 0
+~ temp card_1_value = 0
+~ temp card_2_value = 0
+~ temp card_3_value = 0
+~ temp card_4_value = 0
+~ temp card_5_value = 0
+~ card_1_suit = calculate_suit(card_1)
+~ card_2_suit = calculate_suit(card_2)
+~ card_3_suit = calculate_suit(card_3)
+~ card_4_suit = calculate_suit(card_4)
+~ card_5_suit = calculate_suit(card_5)
+~ card_1_value = calculate_card_value(card_1)
+~ card_2_value = calculate_card_value(card_2)
+~ card_3_value = calculate_card_value(card_3)
+~ card_4_value = calculate_card_value(card_4)
+~ card_5_value = calculate_card_value(card_5)
+
+~ hand_value = calculate_high_card(card_1_value, card_2_value, card_3_value, card_4_value, card_5_value)
+~ temp dup_value = calculate_dup_value(card_1_value, card_2_value, card_3_value, card_4_value, card_5_value)
+{ dup_value > hand_value:
+    ~ hand_value = dup_value
+}
+~ temp flush_value = calculate_flush_value(card_1_suit,card_2_suit,card_3_suit,card_4_suit,card_5_suit,card_1_value,card_2_value,card_3_value,card_4_value,card_5_value)
+{ flush_value > hand_value:
+    ~ hand_value = flush_value
+}
+~ temp straight_value = 0
+~ temp straight_bool = is_straight(card_1_value,card_2_value,card_3_value,card_4_value,card_5_value)
+{ straight_bool:
+    ~ temp straight_high_card = calculate_high_card(card_1_value,card_2_value,card_3_value,card_4_value,card_5_value) / 100
+    ~ temp high_card_suit = 0
+    { card_1_value == straight_high_card:
+        ~ high_card_suit = card_1_suit
+    }
+    { card_2_value == straight_high_card:
+        ~ high_card_suit = card_2_suit
+    }
+    { card_3_value == straight_high_card:
+        ~ high_card_suit = card_3_suit
+    }
+    { card_4_value == straight_high_card:
+        ~ high_card_suit = card_4_suit
+    }
+    { card_5_value == straight_high_card:
+        ~ high_card_suit = card_5_suit
+    }
+    ~straight_value = 40000 + straight_high_card * 100 + high_card_suit
+}
+{ straight_value > hand_value:
+    ~ hand_value = straight_value
+}
+~ return hand_value
+
+
+=== function calculate_suit(card) ===
+~ temp suit_value = 0
+{ card <= 13:
+    ~ suit_value = 1
+}
+{ card >= 14 && card <=26 :
+    ~ suit_value = 2
+}
+{ card >= 27 && card <=39:
+    ~ suit_value = 3
+}
+{ card >= 40 && card <= 52:
+    ~ suit_value = 4
+}
+~ return suit_value
+
+=== function calculate_card_value(card) ===
+~ temp card_value = 0
+
+~ card_value = card % 13
+
+{ card_value == 0:
+    ~ card_value = 13
+}
+{ card_value == 1:
+    ~ card_value = 14
+}
+~ return card_value
+
+=== function calculate_high_card(card1,card2,card3,card4,card5)
+~ temp score = card1
+~ temp score2 = 0
+
+// calculate high card
+{ score < card2:
+    ~ score = card2
+}
+{ score < card3:
+    ~ score = card3
+}
+{ score < card4:
+    ~ score = card4
+}
+{ score < card5:
+    ~ score = card5
+}
+
+// calculate second highest card
+{ score2 < card1 && card1 != score:
+    ~ score2 = card1
+}
+{ score2 < card2 && card2 != score:
+    ~ score2 = card2
+}
+{ score2 < card3 && card3 != score:
+    ~ score2 = card3
+}
+{ score2 < card4 && card4 != score:
+    ~ score2 = card4
+}
+{ score2 < card5 && card5 != score:
+    ~ score2 = card5
+}
+
+~ score = score * 100 + score2
+~ return score
+
+
+=== function is_duplicate(card1,card2,card3,card4,card5)
+~ temp duplicate = 0
+{ card1 == card2 || card1 == card3 || card1 == card4 || card1 == card5:
+    ~ duplicate = 1
+}
+~ return duplicate
+
+
+=== function calculate_dup_value(card1, card2, card3, card4, card5)
+~ temp dup_value = 0
+~ temp card1_dup = is_duplicate(card1,card2,card3,card4,card5)
+~ temp card2_dup = is_duplicate(card2,card1,card3,card4,card5)
+~ temp card3_dup = is_duplicate(card3,card2,card1,card4,card5)
+~ temp card4_dup = is_duplicate(card4,card2,card3,card1,card5)
+~ temp card5_dup = is_duplicate(card5,card2,card3,card4,card1)
+~ temp num_duped = card1_dup + card2_dup + card3_dup + card4_dup + card5_dup
+// no dupes
+{ num_duped == 0:
+    ~ return 0
+}
+// one pair
+{ num_duped == 2:
+    ~ dup_value = 10000
+    ~ temp card_duped = card1 
+    { card2_dup == 1:
+        ~card_duped = card2
+    }
+    { card3_dup == 1:
+        ~card_duped = card3
+    }
+    { card4_dup == 1:
+        ~card_duped = card4
+    }
+    { card5_dup == 1:
+        ~card_duped = card5
+    }
+    ~ dup_value += card_duped * 100
+    
+    { card_duped == card1:
+        ~ card1 = 0
+    }
+    { card_duped == card2:
+        ~ card2 = 0
+    }
+    { card_duped == card3:
+        ~ card3 = 0
+    }
+    { card_duped == card4:
+        ~ card4 = 0
+    }
+    { card_duped == card5:
+        ~ card5 = 0
+    }
+    ~ temp high_card_score = calculate_high_card(card1, card2, card3, card4, card5)
+    ~ dup_value += high_card_score / 100
+    ~ return dup_value
+}
+// three of a kind
+{ num_duped == 3:
+    ~ dup_value = 30000
+    ~ temp card_duped_3 = card1 
+    { card2_dup == 1:
+        ~card_duped_3 = card2
+    }
+    { card3_dup == 1:
+        ~card_duped_3 = card3
+    }
+    { card4_dup == 1:
+        ~card_duped_3 = card4
+    }
+    { card5_dup == 1:
+        ~card_duped_3 = card5
+    }
+    ~ dup_value += card_duped_3 * 100
+    
+    { card_duped_3 == card1:
+        ~ card1 = 0
+    }
+    { card_duped_3 == card2:
+        ~ card2 = 0
+    }
+    { card_duped_3 == card3:
+        ~ card3 = 0
+    }
+    { card_duped_3 == card4:
+        ~ card4 = 0
+    }
+    { card_duped_3 == card5:
+        ~ card5 = 0
+    }
+    ~ temp high_card_score_3 = calculate_high_card(card1, card2, card3, card4, card5)
+    ~ dup_value += high_card_score_3 / 100
+    ~ return dup_value
+}
+
+// full house
+{ num_duped == 5:
+    ~ dup_value = 60000
+    ~ temp triple_val = calculate_high_card(card1,card2,card3,card4,card5) / 100
+    ~ temp double_val = 0
+    {card1 != triple_val:
+        ~ double_val = card1
+    }
+    {card2 != triple_val:
+        ~ double_val = card2
+    }
+    {card3 != triple_val:
+        ~ double_val = card3
+    }
+    {card4 != triple_val:
+        ~ double_val = card4
+    }
+    // fixes the triple val being assigned to the double by high card
+    ~ temp count_triple = 0
+    { card1 == triple_val:
+        ~ count_triple += 1
+    }
+    { card2 == triple_val:
+        ~ count_triple += 1
+    }
+    { card3 == triple_val:
+        ~ count_triple += 1
+    }
+    { card4 == triple_val:
+        ~ count_triple += 1
+    }
+    { card5 == triple_val:
+        ~ count_triple += 1
+    }
+    { count_triple == 3:
+        ~ dup_value += (triple_val*100) + double_val
+    }
+    { count_triple == 2:
+        ~ dup_value += (double_val*100) + triple_val
+    }
+    ~ return dup_value
+}
+
+~ temp hold_YY = 0
+~ temp hold_XX = 0
+
+// two pair and four of a kind
+{ num_duped == 4:
+    ~ temp is_four = is_fourkind(card1, card2, card3, card4, card5)
+    // four of a kind
+    { is_four:
+        ~ dup_value = 70000
+        {card1_dup:
+            ~ hold_YY = card1
+        }
+        {card2_dup:
+            ~ hold_YY = card2
+        }
+        {card3_dup:
+            ~ hold_YY = card3
+        }
+        {card4_dup:
+            ~ hold_YY = card4
+        }
+        {card5_dup:
+            ~ hold_YY = card5
+        }
+        {not card1_dup:
+            ~ hold_XX = card1
+        }
+        {not card2_dup:
+            ~ hold_XX = card2
+        }
+        {not card3_dup:
+            ~ hold_XX = card3
+        }
+        {not card4_dup:
+            ~ hold_XX = card4
+        }
+        {not card5_dup:
+            ~ hold_XX = card5
+        }
+        
+        ~ dup_value += hold_YY*100 + hold_XX
+        ~ return dup_value
+    }
+    // two pair
+    {not is_four:
+        ~ dup_value = 20000
+        ~ temp pair1 = 0
+        ~ temp pair2 = 0
+        { card1_dup:
+            ~ pair1 = card1
+            { card2 != card1 && card2_dup:
+                ~ pair2 = card2
+            }
+            { card3 != card1 && card3_dup:
+                ~ pair2 = card3
+            }
+            { card4 != card1 && card4_dup:
+                ~ pair2 = card4
+            }
+            { card5 != card1 && card5_dup:
+                ~ pair2 = card5
+            }
+        }
+        { not card1_dup:
+            ~ pair1 = card2
+            { card3 != card2:
+                ~ pair2 = card3
+            }
+            { card4 != card2:
+                ~ pair2 = card4
+            }
+            { card5 != card2:
+                ~ pair2 = card5
+            }
+        }
+        { pair1 > pair2:
+            ~dup_value += pair1 * 100 + pair2
+        }
+        { pair2 > pair1:
+            ~dup_value += pair2 * 100 + pair1
+        }
+        ~ return dup_value
+    }
+}
+
+~ return dup_value
+
+=== function is_fourkind(card1,card2,card3,card4,card5) ===
+~ temp is_four = 0
+
+~ temp unique1 = card1
+~ temp unique2 = 0
+~ temp unique3 = 0
+{ card2 != unique1:
+    ~ unique2 = card2
+}
+{ card3 != unique1:
+    { unique2 == 0:
+        ~ unique2 = card3
+    }
+    {card3 != unique2:
+        ~ unique3 = card3
+    }
+}
+{ card4 != unique1:
+    { unique2 == 0:
+        ~ unique2 = card4
+    }
+    {card4 != unique2:
+        ~ unique3 = card4
+    }
+}
+{ card5 != unique1:
+    { unique2 == 0:
+        ~ unique2 = card5
+    }
+    {card5 != unique2:
+        ~ unique3 = card5
+    }
+}
+
+{ unique3 == 0:
+    ~ is_four = 1
+}
+
+~ return is_four
+
+
+=== function calculate_flush_value(card1,card2,card3,card4,card5, card1v,card2v,card3v,card4v,card5v)
+~ temp flush_value = 0
+
+~ temp card1_dup = is_duplicate(card1,card2,card3,card4,card5)
+~ temp card2_dup = is_duplicate(card2,card1,card3,card4,card5)
+~ temp card3_dup = is_duplicate(card3,card2,card1,card4,card5)
+~ temp card4_dup = is_duplicate(card4,card2,card3,card1,card5)
+~ temp card5_dup = is_duplicate(card5,card2,card3,card4,card1)
+~ temp num_duped = card1_dup + card2_dup + card3_dup + card4_dup + card5_dup
+
+{ num_duped != 5:
+    ~ return 0
+}
+
+~ flush_value = 50000
+~ temp flush_high_card = calculate_high_card(card1v,card2v,card3v,card4v,card5v) / 100
+~ temp straight_bool = is_straight(card1v,card2v,card3v,card4v,card5v)
+~ flush_value += flush_high_card*100 + card1
+
+{ straight_bool:
+    ~ flush_value = 80000 + flush_high_card*100 + card1
+}
+
+
+~ return flush_value
+
+=== function is_straight(card1,card2,card3,card4,card5) ===
+~ temp straight_bool = 0
+~ temp high_card_value = calculate_high_card(card1,card2,card3,card4,card5) / 100
+{ card1 == high_card_value - 1 || card2 == high_card_value - 1 || card3 == high_card_value - 1 || card4 == high_card_value - 1 || card5 == high_card_value - 1:
+    { card1 == high_card_value - 2 || card2 == high_card_value - 2 || card3 == high_card_value - 2 || card4 == high_card_value - 2 || card5 == high_card_value - 2:
+        { card1 == high_card_value - 3 || card2 == high_card_value - 3 || card3 == high_card_value - 3 || card4 == high_card_value - 3 || card5 == high_card_value - 3:
+            { card1 == high_card_value - 4 || card2 == high_card_value - 4 || card3 == high_card_value - 4 || card4 == high_card_value - 4 || card5 == high_card_value - 4:
+                ~ straight_bool = 1
+            }
+        }
+    }
+}
+
+~ return straight_bool
+
+
+=== function reshuffle_deck(dummy_arg) ===
+
+    ~ deck += ace_of_clubs
+    ~ deck += two_of_clubs
+    ~ deck += three_of_clubs
+    ~ deck += four_of_clubs
+    ~ deck += five_of_clubs
+    ~ deck += six_of_clubs
+    ~ deck += seven_of_clubs
+    ~ deck += eight_of_clubs
+    ~ deck += nine_of_clubs
+    ~ deck += ten_of_clubs
+    ~ deck += jack_of_clubs
+    ~ deck += queen_of_clubs
+    ~ deck += king_of_clubs
+    ~ deck += ace_of_diamonds
+    ~ deck += two_of_diamonds
+    ~ deck += three_of_diamonds
+    ~ deck += four_of_diamonds
+    ~ deck += five_of_diamonds
+    ~ deck += six_of_diamonds
+    ~ deck += seven_of_diamonds
+    ~ deck += eight_of_diamonds
+    ~ deck += nine_of_diamonds
+    ~ deck += ten_of_diamonds
+    ~ deck += jack_of_diamonds
+    ~ deck += queen_of_diamonds
+    ~ deck += king_of_diamonds
+    ~ deck += ace_of_hearts
+    ~ deck += two_of_hearts
+    ~ deck += three_of_hearts
+    ~ deck += four_of_hearts
+    ~ deck += five_of_hearts
+    ~ deck += six_of_hearts
+    ~ deck += seven_of_hearts
+    ~ deck += eight_of_hearts
+    ~ deck += nine_of_hearts
+    ~ deck += ten_of_hearts
+    ~ deck += jack_of_hearts
+    ~ deck += queen_of_hearts
+    ~ deck += king_of_hearts
+    ~ deck += ace_of_spades
+    ~ deck += two_of_spades
+    ~ deck += three_of_spades
+    ~ deck += four_of_spades
+    ~ deck += five_of_spades
+    ~ deck += six_of_spades
+    ~ deck += seven_of_spades
+    ~ deck += eight_of_spades
+    ~ deck += nine_of_spades
+    ~ deck += ten_of_spades
+    ~ deck += jack_of_spades
+    ~ deck += queen_of_spades
+    ~ deck += king_of_spades
+
+=== function hand_score_to_tier(score)
+~ temp hand_string = 0
+
+{ score < 10000:
+    ~ hand_string = a_high_card 
+}
+{ score < 20000 && score >= 10000:
+    ~ hand_string = one_pair 
+}
+{ score < 30000 && score >= 20000:
+    ~ hand_string = two_pairs 
+}
+{ score < 40000 && score >= 30000:
+    ~ hand_string = three_of_a_kind
+}
+{ score < 50000 && score >= 40000:
+    ~ hand_string = a_straight 
+}
+{ score < 60000 && score >= 50000:
+    ~ hand_string = a_flush 
+}
+{ score < 70000 && score >= 60000:
+    ~ hand_string = a_full_house 
+}
+{ score < 80000 && score >= 70000:
+    ~ hand_string = four_of_a_kind
+}
+{ score < 81400 && score >= 80000:
+    ~ hand_string = a_straight_flush 
+}
+{ score < 90000 && score >= 81400:
+    ~ hand_string = a_royal_flush 
+}
+
+~ return hand_string
+
+=== function hand_score_to_descriptor(score, plural) ===
+~ temp hand_descriptor = 0
+{ plural == 1:
+    { score == 2:
+        ~ hand_descriptor = twos
+    }
+    { score == 3:
+        ~ hand_descriptor = threes
+    }
+    { score == 4:
+        ~ hand_descriptor = fours
+    }
+    { score == 5:
+        ~ hand_descriptor = fives
+    }
+    { score == 6:
+        ~ hand_descriptor = sixes
+    }
+    { score == 7:
+        ~ hand_descriptor = sevens
+    }
+    { score == 8:
+        ~ hand_descriptor = eights
+    }
+    { score == 9:
+        ~ hand_descriptor = nines
+    }
+    { score == 10:
+        ~ hand_descriptor = tens
+    }
+    { score == 11:
+        ~ hand_descriptor = jacks
+    }
+    { score == 12:
+        ~ hand_descriptor = queens
+    }
+    { score == 13:
+        ~ hand_descriptor = kings
+    }
+    { score == 14:
+        ~ hand_descriptor = aces
+    }
+}
+{ plural == 0:
+    { score == 2:
+        ~ hand_descriptor = two
+    }
+    { score == 3:
+        ~ hand_descriptor = three
+    }
+    { score == 4:
+        ~ hand_descriptor = four
+    }
+    { score == 5:
+        ~ hand_descriptor = five
+    }
+    { score == 6:
+        ~ hand_descriptor = six
+    }
+    { score == 7:
+        ~ hand_descriptor = seven
+    }
+    { score == 8:
+        ~ hand_descriptor = eight
+    }
+    { score == 9:
+        ~ hand_descriptor = nine
+    }
+    { score == 10:
+        ~ hand_descriptor = ten
+    }
+    { score == 11:
+        ~ hand_descriptor = jack
+    }
+    { score == 12:
+        ~ hand_descriptor = queen
+    }
+    { score == 13:
+        ~ hand_descriptor = king
+    }
+    { score == 14:
+        ~ hand_descriptor = ace
+    }
+}
+{ plural == 2:
+    {score == 1:
+        ~ hand_descriptor = clubs
+    }
+    {score == 2:
+        ~ hand_descriptor = diamonds
+    }
+    {score == 3:
+        ~ hand_descriptor = hearts
+    }
+    {score == 4:
+        ~ hand_descriptor = spades
+    }
+}
+
+~ return hand_descriptor
+
+
+=== function print_hand_english(score) ===
+~ temp hand_tier = hand_score_to_tier(score)
+~ temp hand_descriptor = 0
+~ temp hand_descriptor2 = 0
+
+// break apart the score into the components
+~ temp X_number = score/10000
+~ X_number = X_number * 10000
+~ temp YY_number = score - X_number
+~ temp ZZ_number = YY_number
+~ YY_number = YY_number / 100
+~ ZZ_number -= YY_number*100
+
+
+{hand_tier} <>
+
+{ hand_tier == a_high_card:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,0)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,0)
+    , {hand_descriptor} then {hand_descriptor2} high.
+}
+{ hand_tier == one_pair:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,1)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,0)
+    of {hand_descriptor} with {hand_descriptor2} high.
+}
+{ hand_tier == two_pairs:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,1)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,1)
+    , {hand_descriptor} over {hand_descriptor2}.
+}
+{ hand_tier == three_of_a_kind:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,1)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,0)
+    , {hand_descriptor} with {hand_descriptor2} high.
+}
+{ hand_tier == a_straight:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,0)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,2)
+    , with {hand_descriptor} high.
+}
+{ hand_tier == a_flush:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,0)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,2)
+    , with {hand_descriptor} high.
+}
+{ hand_tier == a_full_house:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,1)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,1)
+    , with {hand_descriptor} over {hand_descriptor2}.
+}
+{ hand_tier == four_of_a_kind:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,1)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,0)
+    , {hand_descriptor} with a {hand_descriptor2}.
+}
+{ hand_tier == a_straight_flush:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,0)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,2)
+    , {hand_descriptor} high in {hand_descriptor2}.
+}
+{ hand_tier == a_royal_flush:
+    ~ hand_descriptor = hand_score_to_descriptor(YY_number,0)
+    ~ hand_descriptor2 = hand_score_to_descriptor(ZZ_number,2)
+    , in {hand_descriptor2}.
+}
+
+
+// this is still custom to the players I manually added. Player1 = you, player2 = jenna, player3 = hayley
+=== function pick_loser(player1_score,player2_score,player3_score) ===
+~ temp loser = 2
+~ temp losing_score = player2_score
+
+{ player3_score < losing_score:
+    ~ loser = 3
+    ~ losing_score = player3_score
+}
+{player1_score < losing_score:
+    ~ loser = 1
+}
+
+~ return loser
+
+
+=== function discard_card(card_num) ===
+~ temp discard_name = num_to_name(card_num)
+~ deck += discard_name
+
+
+
+// I really should have made one ai, but currently there are custom versions for jenna and hayley
+=== function hayley_ai(card1, card2, card3, card4, card5) ===
+
+~ temp hayley_hand_value = evaluate_hand(card1, card2, card3, card4, card5)
+
+~ temp card_1_suit = calculate_suit(card1)
+~ temp card_2_suit = calculate_suit(card2)
+~ temp card_3_suit = calculate_suit(card3)
+~ temp card_4_suit = calculate_suit(card4)
+~ temp card_5_suit = calculate_suit(card5)
+~ temp card_1_value = calculate_card_value(card1)
+~ temp card_2_value = calculate_card_value(card2)
+~ temp card_3_value = calculate_card_value(card3)
+~ temp card_4_value = calculate_card_value(card4)
+~ temp card_5_value = calculate_card_value(card5)
+
+~ temp card1_dup = is_duplicate(card_1_suit,card_2_suit,card_3_suit,card_4_suit,card_5_suit)
+~ temp card2_dup = is_duplicate(card_2_suit,card_1_suit,card_3_suit,card_4_suit,card_5_suit)
+~ temp card3_dup = is_duplicate(card_3_suit,card_2_suit,card_1_suit,card_4_suit,card_5_suit)
+~ temp card4_dup = is_duplicate(card_4_suit,card_2_suit,card_3_suit,card_1_suit,card_5_suit)
+~ temp card5_dup = is_duplicate(card_5_suit,card_2_suit,card_3_suit,card_4_suit,card_1_suit)
+~ temp num_duped = card1_dup + card2_dup + card3_dup + card4_dup + card5_dup
+
+~ temp discard_1 = 0
+~ temp discard_2 = 0
+~ temp discard_3 = 0
+~ temp discard_4 = 0
+~ temp discard_5 = 0
+
+~ temp perk_3 = 0
+~ temp perk_4 = 0
+~ temp perk_5 = 0
+~ temp perk_6 = 0
+~ temp random_perk_setter = 0
+
+{
+    - hayley_difficulty == 3:
+        ~ random_perk_setter = RANDOM(1,3)
+        { random_perk_setter == 1:
+            ~ perk_3 = 1
+        }
+    - hayley_difficulty == 4:
+        ~ perk_4 = 1
+        ~ random_perk_setter = RANDOM(1,2)
+        { random_perk_setter == 1:
+            ~ perk_3 = 1
+        }
+    - hayley_difficulty == 5:
+        ~ perk_4 = 1
+        ~ random_perk_setter = RANDOM(1,3)
+        { random_perk_setter > 1:
+            ~ perk_3 = 1
+        }
+        ~ random_perk_setter = RANDOM(1,3)
+        { random_perk_setter > 1:
+            ~ perk_5 = 1
+        }
+    - hayley_difficulty > 5:
+        ~ perk_3 = 1
+        ~ perk_4 = 1 
+        ~ perk_5 = 1
+        ~ perk_6 = 1
+}
+
+
+{ hayley_hand_value < 10000:
+    { num_duped == 4 && perk_4 == 1:
+        ~ temp close_flush_suit = 0
+        { card1_dup != 1:
+            ~ close_flush_suit = card_2_suit
+        }
+        { card1_dup == 1:
+            ~ close_flush_suit = card_1_suit
+        }
+        
+        { card_1_suit != close_flush_suit:
+            ~ discard_1 = hayley_card_1
+            ~ hayley_card_1 = draw_card(dummy_pass)
+        }
+        { card_2_suit != close_flush_suit:
+            ~ discard_2 = hayley_card_2
+            ~ hayley_card_2 = draw_card(dummy_pass)
+        }
+        { card_3_suit != close_flush_suit:
+            ~ discard_3 = hayley_card_3
+            ~ hayley_card_3 = draw_card(dummy_pass)
+        }
+        { card_4_suit != close_flush_suit:
+            ~ discard_4 = hayley_card_4
+            ~ hayley_card_4 = draw_card(dummy_pass)
+        }
+        { card_5_suit != close_flush_suit:
+            ~ discard_5 = hayley_card_5
+            ~ hayley_card_5 = draw_card(dummy_pass)
+        }
+    }
+    { num_duped != 4 && perk_3 == 1:
+        ~ temp hayley_high_card = calculate_high_card(card_1_value, card_2_value, card_3_value, card_4_value, card_5_value) / 100
+            { card_1_value != hayley_high_card:
+                    ~ discard_1 = hayley_card_1
+                    ~ hayley_card_1 = draw_card(dummy_pass)
+            }
+            { card_2_value != hayley_high_card:
+                    ~ discard_2 = hayley_card_2
+                    ~ hayley_card_2 = draw_card(dummy_pass)
+            }
+            { card_3_value != hayley_high_card:
+                    ~ discard_3 = hayley_card_3
+                    ~ hayley_card_3 = draw_card(dummy_pass)
+            }
+            { card_4_value != hayley_high_card:
+                    ~ discard_4 = hayley_card_4
+                    ~ hayley_card_4 = draw_card(dummy_pass)
+            }
+            { card_5_value != hayley_high_card:
+                    ~ discard_5 = hayley_card_5
+                    ~ hayley_card_5 = draw_card(dummy_pass)
+            }
+    }
+}
+~ card1_dup = is_duplicate(card_1_value,card_2_value,card_3_value,card_4_value,card_5_value)
+~ card2_dup = is_duplicate(card_2_value,card_1_value,card_3_value,card_4_value,card_5_value)
+~ card3_dup = is_duplicate(card_3_value,card_2_value,card_1_value,card_4_value,card_5_value)
+~ card4_dup = is_duplicate(card_4_value,card_2_value,card_3_value,card_1_value,card_5_value)
+~ card5_dup = is_duplicate(card_5_value,card_2_value,card_3_value,card_4_value,card_1_value)
+~ num_duped = card1_dup + card2_dup + card3_dup + card4_dup + card5_dup
+{ (hayley_hand_value > 10000 && hayley_hand_value < 20000 && perk_5 == 1) || (((hayley_hand_value > 20000 && hayley_hand_value < 40000) || (hayley_hand_value > 70000 && hayley_hand_value < 80000) ) && perk_5 == 1):
+    { card1_dup != 1:
+        ~ discard_1 = card1
+        ~ hayley_card_1 = draw_card(dummy_pass)
+    }
+    { card2_dup != 1:
+        ~ discard_2 = card2
+        ~ hayley_card_2 = draw_card(dummy_pass)
+    }
+    { card3_dup != 1:
+        ~ discard_3 = card3
+        ~ hayley_card_3 = draw_card(dummy_pass)
+    }
+    { card4_dup != 1:
+        ~ discard_4 = card4
+        ~ hayley_card_4 = draw_card(dummy_pass)
+    }
+    { card5_dup != 1:
+        ~ discard_5 = card5
+        ~ hayley_card_5 = draw_card(dummy_pass)
+    }
+}
+
+
+// add discarded cards back into the deck
+{ discard_1 != 0:
+    ~ discard_card(discard_1)
+}
+{ discard_2 != 0:
+    ~ discard_card(discard_2)
+}
+{ discard_3 != 0:
+    ~ discard_card(discard_3)
+}
+{ discard_4 != 0:
+    ~ discard_card(discard_4)
+}
+{ discard_5 != 0:
+    ~ discard_card(discard_5)
+}
+
+
+=== function jenna_ai(card1, card2, card3, card4, card5) ===
+
+~ temp jenna_hand_value = evaluate_hand(card1, card2, card3, card4, card5)
+
+~ temp card_1_suit = calculate_suit(card1)
+~ temp card_2_suit = calculate_suit(card2)
+~ temp card_3_suit = calculate_suit(card3)
+~ temp card_4_suit = calculate_suit(card4)
+~ temp card_5_suit = calculate_suit(card5)
+~ temp card_1_value = calculate_card_value(card1)
+~ temp card_2_value = calculate_card_value(card2)
+~ temp card_3_value = calculate_card_value(card3)
+~ temp card_4_value = calculate_card_value(card4)
+~ temp card_5_value = calculate_card_value(card5)
+
+~ temp card1_dup = is_duplicate(card_1_suit,card_2_suit,card_3_suit,card_4_suit,card_5_suit)
+~ temp card2_dup = is_duplicate(card_2_suit,card_1_suit,card_3_suit,card_4_suit,card_5_suit)
+~ temp card3_dup = is_duplicate(card_3_suit,card_2_suit,card_1_suit,card_4_suit,card_5_suit)
+~ temp card4_dup = is_duplicate(card_4_suit,card_2_suit,card_3_suit,card_1_suit,card_5_suit)
+~ temp card5_dup = is_duplicate(card_5_suit,card_2_suit,card_3_suit,card_4_suit,card_1_suit)
+~ temp num_duped = card1_dup + card2_dup + card3_dup + card4_dup + card5_dup
+
+~ temp discard_1 = 0
+~ temp discard_2 = 0
+~ temp discard_3 = 0
+~ temp discard_4 = 0
+~ temp discard_5 = 0
+
+~ temp perk_3 = 0
+~ temp perk_4 = 0
+~ temp perk_5 = 0
+~ temp perk_6 = 0
+~ temp random_perk_setter = 0
+
+{
+    - jenna_difficulty == 3:
+        ~ random_perk_setter = RANDOM(1,3)
+        { random_perk_setter == 1:
+            ~ perk_3 = 1
+        }
+    - jenna_difficulty == 4:
+        ~ perk_4 = 1
+        ~ random_perk_setter = RANDOM(1,2)
+        { random_perk_setter == 1:
+            ~ perk_3 = 1
+        }
+    - jenna_difficulty == 5:
+        ~ perk_4 = 1
+        ~ random_perk_setter = RANDOM(1,3)
+        { random_perk_setter > 1:
+            ~ perk_3 = 1
+        }
+        ~ random_perk_setter = RANDOM(1,3)
+        { random_perk_setter > 1:
+            ~ perk_5 = 1
+        }
+    - jenna_difficulty > 5:
+        ~ perk_3 = 1
+        ~ perk_4 = 1 
+        ~ perk_5 = 1
+        ~ perk_6 = 1
+}
+
+
+{ jenna_hand_value < 10000:
+    { num_duped == 4 && perk_4 == 1:
+        ~ temp close_flush_suit = 0
+        { card1_dup != 1:
+            ~ close_flush_suit = card_2_suit
+        }
+        { card1_dup == 1:
+            ~ close_flush_suit = card_1_suit
+        }
+        
+        { card_1_suit != close_flush_suit:
+            ~ discard_1 = jenna_card_1
+            ~ jenna_card_1 = draw_card(dummy_pass)
+        }
+        { card_2_suit != close_flush_suit:
+            ~ discard_2 = jenna_card_2
+            ~ jenna_card_2 = draw_card(dummy_pass)
+        }
+        { card_3_suit != close_flush_suit:
+            ~ discard_3 = jenna_card_3
+            ~ jenna_card_3 = draw_card(dummy_pass)
+        }
+        { card_4_suit != close_flush_suit:
+            ~ discard_4 = jenna_card_4
+            ~ jenna_card_4 = draw_card(dummy_pass)
+        }
+        { card_5_suit != close_flush_suit:
+            ~ discard_5 = jenna_card_5
+            ~ jenna_card_5 = draw_card(dummy_pass)
+        }
+    }
+    { num_duped != 4 && perk_3 == 1:
+        ~ temp jenna_high_card = calculate_high_card(card_1_value, card_2_value, card_3_value, card_4_value, card_5_value) / 100
+            { card_1_value != jenna_high_card:
+                    ~ discard_1 = jenna_card_1
+                    ~ jenna_card_1 = draw_card(dummy_pass)
+            }
+            { card_2_value != jenna_high_card:
+                    ~ discard_2 = jenna_card_2
+                    ~ jenna_card_2 = draw_card(dummy_pass)
+            }
+            { card_3_value != jenna_high_card:
+                    ~ discard_3 = jenna_card_3
+                    ~ jenna_card_3 = draw_card(dummy_pass)
+            }
+            { card_4_value != jenna_high_card:
+                    ~ discard_4 = jenna_card_4
+                    ~ jenna_card_4 = draw_card(dummy_pass)
+            }
+            { card_5_value != jenna_high_card:
+                    ~ discard_5 = jenna_card_5
+                    ~ jenna_card_5 = draw_card(dummy_pass)
+            }
+    }
+}
+~ card1_dup = is_duplicate(card_1_value,card_2_value,card_3_value,card_4_value,card_5_value)
+~ card2_dup = is_duplicate(card_2_value,card_1_value,card_3_value,card_4_value,card_5_value)
+~ card3_dup = is_duplicate(card_3_value,card_2_value,card_1_value,card_4_value,card_5_value)
+~ card4_dup = is_duplicate(card_4_value,card_2_value,card_3_value,card_1_value,card_5_value)
+~ card5_dup = is_duplicate(card_5_value,card_2_value,card_3_value,card_4_value,card_1_value)
+~ num_duped = card1_dup + card2_dup + card3_dup + card4_dup + card5_dup
+{ (jenna_hand_value > 10000 && jenna_hand_value < 20000 && perk_5 == 1) || (((jenna_hand_value > 20000 && jenna_hand_value < 40000) || (jenna_hand_value > 70000 && jenna_hand_value < 80000) ) && perk_5 == 1):
+    { card1_dup != 1:
+        ~ discard_1 = card1
+        ~ jenna_card_1 = draw_card(dummy_pass)
+    }
+    { card2_dup != 1:
+        ~ discard_2 = card2
+        ~ jenna_card_2 = draw_card(dummy_pass)
+    }
+    { card3_dup != 1:
+        ~ discard_3 = card3
+        ~ jenna_card_3 = draw_card(dummy_pass)
+    }
+    { card4_dup != 1:
+        ~ discard_4 = card4
+        ~ jenna_card_4 = draw_card(dummy_pass)
+    }
+    { card5_dup != 1:
+        ~ discard_5 = card5
+        ~ jenna_card_5 = draw_card(dummy_pass)
+    }
+}
+
+
+// add discarded cards back into the deck
+{ discard_1 != 0:
+    ~ discard_card(discard_1)
+}
+{ discard_2 != 0:
+    ~ discard_card(discard_2)
+}
+{ discard_3 != 0:
+    ~ discard_card(discard_3)
+}
+{ discard_4 != 0:
+    ~ discard_card(discard_4)
+}
+{ discard_5 != 0:
+    ~ discard_card(discard_5)
+}
+
+
+
+
+
+=== intro_menu ===
+
+___________
+Intro Menu:
+___________
+
++ Basic instructions
+-> basic_instructions
++ Play the game
+-> prologue_1
++ Adjust the settings (and view endings)
+-> settings_menu
++ Read about the mechanics
+-> mechanics_description
++ test
+-> test_1
++ View source code (Not yet a thing)
+-> source_code
+
+
+
+=== test_1 ===
+
+~ hayley_card_1 = 2
+~ hayley_card_2 = 2+39
+~ hayley_card_3 = 4
+~ hayley_card_4 = 2+26
+~ hayley_card_5 = 8 + 13
+{deck}
+
+{ hayley_card_1 } { hayley_card_2} { hayley_card_3} {hayley_card_4} {hayley_card_5}
+
+~ temp test_hayley_hand = evaluate_hand(hayley_card_1,hayley_card_2,hayley_card_3,hayley_card_4,hayley_card_5)
+
+{test_hayley_hand}
+
+~ hayley_ai(hayley_card_1,hayley_card_2,hayley_card_3,hayley_card_4,hayley_card_5)
+
+~ test_hayley_hand = evaluate_hand(hayley_card_1,hayley_card_2,hayley_card_3,hayley_card_4,hayley_card_5)
+
+{test_hayley_hand}
+
+{ hayley_card_1 } { hayley_card_2} { hayley_card_3} {hayley_card_4} {hayley_card_5}
+
+{deck}
+
++ fake ending
+-> fake_ending
+
+
+=== basic_instructions ===
+
+This is a fairly simple game of poker (speficically five card draw). Each player is dealt five cards from a standard deck of cards. On their turn, each player can discard as many cards (all at once) as they want and redraw new ones to replace them. Each player gets just one turn in the round, and at the end, the hands are compared. Aces are high cards, not ones.
+
+In order of highest to lowest value, the hands you can get are:
+1) Royal flush (ace, king, queen, jack, ten, all in one suit)
+2) Straight flush (five sequential cards, all in one suit)
+3) Four of a kind
+4) Full house (three of one number and two of another)
+5) Flush (five cards of one suit)
+6) Straight (five sequential cards)
+7) Three of a kind
+8) Two pairs
+9) One pair
+10) High card
+
+The tiebreaker rules can get complicated, and aside from some first level tiebreakers on the weaker hands (i.e. who has the higher pair), you won't see much of them.
+
+Whoever has the worst hand has to take off an item of clothing. The game ends when all but one player are naked (and maybe more? I won't spoil it, but get one person naked to reveal the SPNATI style final round.)
+
+This game is random (pseudorandom), and will change every time you play unless you set the seed in the settings. Most of the scenes and dialogue are conditioned on the state of the game (and some user choices), so you should be able to get new and fun games many times over.
+
+If you get bored of trying to win, and you just want the sexy stuff, there is a setting from the menu that gives you automatic victories on every hand.
+
+Have fun!
+
++ Back to menu
+-> intro_menu
+
+
+=== mechanics_description ===
+
+I'll be honest, if you really want to know how this game works, then you need to understand the inky editor a little bit (literotica has some basic tutorials, and the ink github has a library of them).
+
+The cards: Cards have a numeric value on the backend, 1-52, ace through king, clubs then diamonds, then hearts, then spades. I have utility functions to convert a number to the card name, i.e. ace_of_clubs = 1 and vice versa.
+
+The deck: All the card names are stored in a LIST variable called deck which essentially tracks which cards are in the deck or in hands. If the card is taken from the deck, the name is deactivated/removed from the list and vice versa for being put back in the deck. There is no discard pile, assume every discarded card is immediately reshuffled back into the deck after your turn.
+
+The NPCs: Jenna's default difficulty is set to 3 and Hayley's is set to 5. 
+Difficulty 1: (bad). 
+Difficulty 2: They refuse to discard/redraw. 
+Difficulty 3: If their best hand is high card, they keep that card and redraw all others. (Activates with 33% probability)
+Difficulty 4: Tier 3 perk (50% probability), and if they see 4 of one suit (and their best hand is high card), they discard the card of the wrong suit hoping for a flush. (100% probability)
+Difficulty 5: Tier 3 (67% probability), Tier 4 perk (100% probability), and if they have one pair, they discard the other three cards. (Activates with 66% probability)
+Difficulty 6: All previous perks with (100% probability), and they now apply tier-5 logic to two pairs, three of a kind, and four of a kind. (100% probability)
+Difficlty 7: Tier 6 difficulty with the added perk that they will attempt to cheat if they are going to lose while naked. (100% probability repeated until called out or they win).
+
+Drawing a card: The game draws a random number between 1 and 52, checks to see if the card name is in the deck, and essentially performs rejection sampling, redrawing until it hits a card in the deck.
+
+Hand value: This took quite a bit of code. I made a 5 digit number XYYZZ where X is the hand tier (high card = 0, one pair = 1, etc). YY is the first tiebreaker (i.e. the value of the cards in the pair for one pair). ZZ is the second tiebreaker (i.e. the next highest card outside the pair for one pair). The lowest score loses. There is also some machinery to convert that number into english descriptors that are printed (so that you aren't left with just a list of the cards or a number).
+
+Tiebreakers: First and second level tiebreakers apply. A first level example would be: a pair of tens beats a pair of fives. A second level tiebreaker would be: both players have pairs of tens, whoever has the next highest card wins. If a turn requires a third tiebreaker, the game just gives the win to the player with the highest priority: you = highest, jenna = lowest
+
+Clothing: Just like the deck, clothes are just a bunch of names on a list, and they get knocked off the list when they get removed from the "person". It would be easy to add randomness to the order of clothing removal, but I didn't want to deal with the complexity it would introduce to all the conditionals (the players say specific things when there are specific combinations of clothes between them).
+
+Filling the scenes: Since most of the story happens in a relatively small number of knots that get repeated a bunch, most of the scenes and dialogue are stuffed in conditionals. Some only activate on a certain turn, some activate on certain actions (like a specific player removing a specific article of clothing), and other more advanced multi component conditionals.
+
+
++ Back to intro menu
+-> intro_menu
+
+=== settings_menu ===
+
+_____________
+Settings Menu:
+_____________
+
+Current settings for modification:
++ 1) Player luck
+-> set_player_luck
++ 2) Set random seed
+-> set_random_seed
++ 3) Jenna's difficulty
+-> set_jenna_difficulty
++ 4) Hayley's difficulty
+-> set_hayley_difficulty
++ 5) Show stats details
+-> set_verbosity
++ 6) Unlock endings
+-> endings_check
+
+
++ Back to intro menu
+-> intro_menu
+
+=== set_random_seed ===
+
+Set random seed: (bear in mind that his only keeps the game predictable on replay if you click the same buttons in the game in the same order)
++ Keep random
+    ~ SEED_RANDOM(random_seed)
++ Set to (111)
+    ~ SEED_RANDOM(111)
++ Set to (2222)
+    ~ SEED_RANDOM(2222)
+    
++ Back to settings menu
+-> settings_menu
+
+
+=== set_player_luck ===
+
+
+Set player luck:
++ Play normally (click this to reset back to normal if you clicked rig the dice)
+    ~ player_luck = 0
++ Rig the dice (your hand will always win regardless of actual strength)
+    ~ player_luck = 1
+-
+-> settings_menu
+
+=== set_jenna_difficulty ===
+
+Read the "read about the mechanics" segment from the main menu for more details.
+
++ Difficulty = 1 (makes actively bad discards)
+~ jenna_difficulty = 1
++ Difficulty = 2 (never discards)
+~ jenna_difficulty = 2
++ Difficulty = 3 (Jenna's default)
+~ jenna_difficulty = 3
++ Difficulty = 4
+~ jenna_difficulty = 4
++ Difficulty = 5 
+~ jenna_difficulty = 5
++ Difficulty = 6 (max difficulty)
+~ jenna_difficulty = 6
+-
+-> settings_menu
+
+=== set_hayley_difficulty ===
+
+Read the "read about the mechanics" segment from the main menu for more details.
+
++ Difficulty = 1 (makes actively bad discards)
+~ hayley_difficulty = 1
++ Difficulty = 2 (never discards)
+~ hayley_difficulty = 2
++ Difficulty = 3 
+~ hayley_difficulty = 3
++ Difficulty = 4
+~ hayley_difficulty = 4
++ Difficulty = 5 (Hayley's default)
+~ hayley_difficulty = 5
++ Difficulty = 6 (max difficulty)
+~ hayley_difficulty = 6
++ Difficulty = 7 (max difficulty + easter egg cheats)
+~ hayley_difficulty = 7
+-
+-> settings_menu
+
+
+=== set_verbosity ===
+
+Choices you make can affect backend meters (currently: arousal). Turning this setting on (it is defaulted to off) will print out stat changes and the current value of the stat when a change happens.
+
++ Turn on verbose output
+~ game_verbosity = 1
++ Turn off verbose output
+~ game_verbosity = 0
+-
+-> settings_menu
+
+=== endings_check ===
+
+It is reccomended that you play through the game at least once before cheating to the end. Also, bear in mind that some pieces of the endings might depend on events that happen in the game, so there is no guarantee that the endings will make sense. 
+
+For the people who want to reach these endings naturally, here is the list of all available endings and their variations. If you want to see how to unlock them, hit that option at the bottom and the unlock conditions will be revealed.
+
+1) Fake ending: Unlock condition = {reveal_endings == 0: hidden | none}
+______________________
+___Player Loss Endings___
+______________________
+1a) Embarrassement: Unlock condition = {reveal_endings == 0: hidden | Lose the game. (Denigrating variant for being first out).}
+1b) Become sextoy: Unlock condition = {reveal_endings == 0: hidden | Lose, but increase the winning player's arousal score to 100. (Variants for Jenna or Hayley)}
+1c) Sapphic: Unlock condition = {reveal_endings == 0: hidden | Lose, but increase both Hayley and Jenna's arousal to 100.}
+_____________________
+
+___Player Win Endings___
+_____________________
+2a) : Unlock condition = {reveal_endings == 0: hidden | Win the game}
+2b) Have sex: Unlock condition = {reveal_endings == 0: hidden | Win with one player's arousal over 100.}
+2c) Threesome: Unlock condition = {reveal_endings == 0: hidden | none}
+
+_____________________
+
+___Easter Egg Endings___
+_____________________
+3a) Catch Hayley cheating: Unlock condition = {reveal_endings == 0: hidden | Set the difficulty to 7, get Hayley naked, and call her out when she tries to cheat on her next loss. You do not need to win, and it works with player_luck set to 1.}
+3b) Caught cheating: Unlock condition = {reveal_endings == 0: hidden | Finish a game with player_luck set to 1}
+
+______________________
+
+___Easter Egg Variants___
+______________________
+
+Nipple Rings: Unlock condition = {reveal_endings == 0: hidden | Make Hayley wear her ear rings as nipple rings. (Applies to 2b (Hayley variant) and 2c endings)}
+Anal: Unlock condition = {reveal_endings == 0: hidden | Make Jenna confess to loving anal. (Applies to 2b (Jenna variant) and 2c endings)}
+
+
++ Reveal unlock conditions
+~ reveal_endings = 1
+-> endings_check
++ Unlock all endings with the master key
+~ unlock_all = 1
++ Lock endings with the master key (does not reset legitimately unlocked endings and variants) (does nothing if you havent used the master key)
+~ unlock_all = 0
+-
+
++ View all unlocked endings
+-> endings_knot
++ Back to the menu
+-> intro_menu
+
+
+
+=== prologue_1 ===
+
+(FIX) set friendship/arousal here
+
++ Start the game
+-> turn_start
+
+
+
+// The main gameplay cycle ======================================================
+
+=== turn_start ===
+~ turn_counter += 1
+
+It is now turn: {turn_counter}
+
+There should be stuff here
+
+-> pre_turn_scene
+
+=== pre_turn_scene ===
+
++ Deal the cards
+-> fill_hands
+
+// Fill each players' hand at the start of the turn
+=== fill_hands ===
+
+{ player_masturbate == 0:
+    ~ player_card_1 = draw_card(dummy_pass)
+    ~ player_card_2 = draw_card(dummy_pass)
+    ~ player_card_3 = draw_card(dummy_pass)
+    ~ player_card_4 = draw_card(dummy_pass)
+    ~ player_card_5 = draw_card(dummy_pass)
+}
+{ hayley_masturbate == 0:
+    ~ hayley_card_1 = draw_card(dummy_pass)
+    ~ hayley_card_2 = draw_card(dummy_pass)
+    ~ hayley_card_3 = draw_card(dummy_pass)
+    ~ hayley_card_4 = draw_card(dummy_pass)
+    ~ hayley_card_5 = draw_card(dummy_pass)
+}
+{ jenna_masturbate == 0:
+    ~ jenna_card_1 = draw_card(dummy_pass)
+    ~ jenna_card_2 = draw_card(dummy_pass)
+    ~ jenna_card_3 = draw_card(dummy_pass)
+    ~ jenna_card_4 = draw_card(dummy_pass)
+    ~ jenna_card_5 = draw_card(dummy_pass)
+}
+
+{
+    - player_masturbate == 0:
+        + Make your turn
+        -> display_and_discard
+}
+{ 
+    - player_masturbate != 0: 
+        -> player_loss
+} 
+
+
+
+=== display_and_discard ===
+
+// update english card names
+~ player_card_1e = num_to_name(player_card_1)
+~ player_card_2e = num_to_name(player_card_2)
+~ player_card_3e = num_to_name(player_card_3)
+~ player_card_4e = num_to_name(player_card_4)
+~ player_card_5e = num_to_name(player_card_5)
+
+Your current hand is:
+Slot 1: {player_card_1e}
+Slot 2: {player_card_2e}
+Slot 3: {player_card_3e}
+Slot 4: {player_card_4e}
+Slot 5: {player_card_5e}
+
+Which cards would you like to discard? (Say yes or no to discarding each slot in order, one at a time)
+
+~ temp discard_1 = 0
+~ temp discard_2 = 0
+~ temp discard_3 = 0
+~ temp discard_4 = 0
+~ temp discard_5 = 0
+
+Discard {player_card_1e}?
++ Yes
+    ~ discard_1 = player_card_1
+    ~ player_card_1 = draw_card(dummy_pass)
++ No
+- 
+Discard {player_card_2e}?
++ Yes
+    ~ discard_2 = player_card_2
+    ~ player_card_2 = draw_card(dummy_pass)
++ No
+- 
+Discard {player_card_3e}?
++ Yes
+    ~ discard_3 = player_card_3
+    ~ player_card_3 = draw_card(dummy_pass)
++ No
+- 
+Discard {player_card_4e}?
++ Yes
+    ~ discard_4 = player_card_4
+    ~ player_card_4 = draw_card(dummy_pass)
++ No
+- 
+Discard {player_card_5e}?
++ Yes
+    ~ discard_5 = player_card_5
+    ~ player_card_5 = draw_card(dummy_pass)
++ No
+- 
+
+// add discarded cards back into the deck
+{ discard_1 != 0:
+    ~ discard_card(discard_1)
+}
+{ discard_2 != 0:
+    ~ discard_card(discard_2)
+}
+{ discard_3 != 0:
+    ~ discard_card(discard_3)
+}
+{ discard_4 != 0:
+    ~ discard_card(discard_4)
+}
+{ discard_5 != 0:
+    ~ discard_card(discard_5)
+}
+
+
+// update english card names
+~ player_card_1e = num_to_name(player_card_1)
+~ player_card_2e = num_to_name(player_card_2)
+~ player_card_3e = num_to_name(player_card_3)
+~ player_card_4e = num_to_name(player_card_4)
+~ player_card_5e = num_to_name(player_card_5)
+Your new hand is:
+{player_card_1e}, {player_card_2e}, {player_card_3e}, {player_card_4e}, {player_card_5e}
+
+
+{
+    - jenna_masturbate == 0:
+        + Jenna's turn
+        -> jenna_turn
+}
+{ 
+    - jenna_masturbate != 0: 
+        -> jenna_loss
+}    
+
+
+=== player_loss ===
+
+player masturbate
+
+{
+    - jenna_masturbate == 0:
+        + Jenna's turn
+        -> jenna_turn
+}
+{ 
+    - jenna_masturbate != 0: 
+        -> jenna_loss
+} 
+
+=== jenna_turn ===
+
+Jenna's turn here
+
+~ jenna_ai(jenna_card_1, jenna_card_2, jenna_card_3, jenna_card_4, jenna_card_5)
+
+{
+    - hayley_masturbate == 0:
+        + Hayley's turn
+        -> hayley_turn
+    - hayley_masturbate != 0:
+        -> hayley_loss
+}
+
+=== jenna_loss ===
+
+jenna masturbate here
+
+{
+    - hayley_masturbate == 0:
+        + Hayley's turn
+        -> hayley_turn
+    - hayley_masturbate != 0:
+        -> hayley_loss
+}
+
+=== hayley_turn ===
+
+Hayley's turn here
+
+~ hayley_ai(hayley_card_1,hayley_card_2,hayley_card_3,hayley_card_4,hayley_card_5)
+
++ Reveal hands
+-> hand_reveal
+
+=== hayley_loss ===
+
+hayley masturbate here
+
++ Reveal hands
+-> hand_reveal
+
+
+=== hand_reveal ===
+{ player_masturbate == 0:
+    ~ temp player_score = evaluate_hand(player_card_1,player_card_2,player_card_3,player_card_4,player_card_5)
+}
+
+{ jenna_masturbate == 0:
+    // update english card names
+    ~ jenna_card_1e = num_to_name(jenna_card_1)
+    ~ jenna_card_2e = num_to_name(jenna_card_2)
+    ~ jenna_card_3e = num_to_name(jenna_card_3)
+    ~ jenna_card_4e = num_to_name(jenna_card_4)
+    ~ jenna_card_5e = num_to_name(jenna_card_5)
+    Jenna's hand is: {jenna_card_1e}, {jenna_card_2e}, {jenna_card_3e}, {jenna_card_4e}, {jenna_card_5e}
+    ~ temp jenna_score = evaluate_hand(jenna_card_1,jenna_card_2,jenna_card_3,jenna_card_4,jenna_card_5)
+}
+
+{ hayley_masturbate == 0:
+    // update english card names
+    ~ hayley_card_1e = num_to_name(hayley_card_1)
+    ~ hayley_card_2e = num_to_name(hayley_card_2)
+    ~ hayley_card_3e = num_to_name(hayley_card_3)
+    ~ hayley_card_4e = num_to_name(hayley_card_4)
+    ~ hayley_card_5e = num_to_name(hayley_card_5)
+    Hayley's hand is: {hayley_card_1e}, {hayley_card_2e}, {hayley_card_3e}, {hayley_card_4e}, {hayley_card_5e}
+    ~ temp hayley_score = evaluate_hand(hayley_card_1,hayley_card_2,hayley_card_3,hayley_card_4,hayley_card_5)
+}
+
+
+
+{ player_masturbate == 0:
+    You got <>
+    ~ print_hand_english(player_score)
+}
+{ jenna_masturbate == 0:
+    Jenna got <>
+    ~ print_hand_english(jenna_score)
+}
+{ hayley_masturbate == 0:
+    Hayley got <>
+    ~ print_hand_english(hayley_score)
+}
+
+// stop players from losing if they are already out
+{ player_masturbate == 1:
+    ~ player_score = 1999999
+}
+{ jenna_masturbate == 1:
+    ~ jenna_score = 1999999
+}
+{ hayley_masturbate == 1:
+    ~ hayley_score = 1999999
+}
+
+~ temp loser = pick_loser(jenna_score,hayley_score,player_score)
+{ player_luck == 1 && loser == 1:
+    (A sprinkling of fairy dust prevents you from losing.)
+    ~ loser = pick_loser(jenna_score,hayley_score,999999)
+}
+
+
++ {loser==2} Time for Jenna to strip
+-> jenna_strip
++ {loser==3} Time for Hayley to strip
+-> hayley_strip
++ {loser==1} Time for you to strip
+-> player_strip
+
+=== jenna_strip ===
+
+{
+    - num_jenna_clothes == 5:
+        ~ jenna_clothes -= jenna_sandals
+    - num_jenna_clothes == 4:
+        ~ jenna_clothes -= jenna_sweater
+    - num_jenna_clothes == 3:
+        ~ jenna_clothes -= jenna_sweatpants
+    - num_jenna_clothes == 2:
+        ~ jenna_clothes -= jenna_sports_bra
+    - num_jenna_clothes == 1:
+        ~ jenna_clothes -= jenna_panties
+    - num_jenna_clothes == 0:
+        ~ jenna_masturbate = 1
+}
+~ num_jenna_clothes -= 1
+
+
++ end turn
+-> end_turn
+
+=== hayley_strip ===
+
+{
+    - num_hayley_clothes == 7:
+        ~ hayley_clothes -= hayley_jacket
+    - num_hayley_clothes == 6:
+        ~ hayley_clothes -= hayley_boots
+    - num_hayley_clothes == 5:
+        ~ hayley_clothes -= hayley_crop_top
+    - num_hayley_clothes == 4:
+        ~ hayley_clothes -= hayley_ear_rings
+    - num_hayley_clothes == 3:
+        ~ hayley_clothes -= hayley_bra
+    - num_hayley_clothes == 2:
+        ~ hayley_clothes -= hayley_leggings
+    - num_hayley_clothes == 1:
+        ~ hayley_clothes -= hayley_thong
+    - num_hayley_clothes == 0:
+        ~ hayley_masturbate = 1
+}
+~ num_hayley_clothes -= 1
+
+
++ end turn
+-> end_turn
+
+=== player_strip ===
+
+{
+    - num_player_clothes == 0:
+        ~ player_masturbate = 1
+}
+
+~ num_player_clothes -= 1
+
+
++ end turn
+-> end_turn
+
+
+=== end_turn ===
+
+~ reshuffle_deck(dummy_pass)
+
+~ temp end_condition = 0
+{ num_player_clothes == -1 && num_jenna_clothes == -1:
+    ~ end_condition = 1
+    ~ winning_player = 3
+}
+{ num_player_clothes == -1 && num_hayley_clothes == -1:
+    ~ end_condition = 1
+    ~ winning_player = 2
+}
+{ num_jenna_clothes == -1 && num_hayley_clothes == -1:
+    ~ end_condition = 1
+    ~ winning_player = 1
+}
+
+{
+    - end_condition == 0:
+        + Next turn
+        -> turn_start
+    - end_condition != 0:
+        + Keep masturbating
+        -> finish_cycles
+}
+
+
+=== finish_cycles ===
+
+
++ Go to endings
+-> endings_knot
+
+
+
+=== endings_knot ===
+
+All unlocked endings are displayed here.
+
+
++ fake ending
+-> fake_ending
+
+
+
+=== fake_ending ===
+
+the end
+
++ the end
+-> END
+
+=== source_code ===
+
+I want to put it here, but I don't yet see how.
+
+Check out my github (ASongOfSeaBreeze) for the source code.
+
++ Menu
+-> intro_menu
+
